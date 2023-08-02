@@ -51,7 +51,7 @@ namespace PhoenixAdult.ScheduledTasks
                 var movies = items.Where(o => o.Studios.Contains(studio, StringComparer.OrdinalIgnoreCase));
                 var option = new CollectionCreationOptions
                 {
-                    Name = studio,
+                    Name = studio.Replace("&nbsp;", string.Empty).Trim(),
 #if __EMBY__
                     ItemIdList = movies.Select(o => o.InternalId).ToArray(),
 #else
