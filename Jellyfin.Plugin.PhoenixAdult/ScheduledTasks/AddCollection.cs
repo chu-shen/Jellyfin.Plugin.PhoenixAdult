@@ -42,13 +42,15 @@ namespace PhoenixAdult.ScheduledTasks
 
             var items = this.libraryManager.GetItemList(new InternalItemsQuery()).Where(o => o.ProviderIds.ContainsKey(Plugin.Instance.Name));
 
-            var studios = items.SelectMany(o => o.Studios).Distinct().ToList();
+
+            var studios = items.SelectMany(o => o.Studios.Select(studio => studio.Replace("&nbsp;", string.Empty).Trim())).Distinct().ToList();
 
             foreach (var (idx, studio) in studios.WithIndex())
             {
                 progress?.Report((double)idx / studios.Count * 100);
 
-                var movies = items.Where(o => o.Studios.Contains(studio, StringComparer.OrdinalIgnoreCase));
+                var movies = items.Where(o => o.Studios.Any(s => s.Replace("&nbsp;", string.Empty).Trim().Equals(studio, StringComparison.OrdinalIgnoreCase)))
+                  .ToList();
                 var option = new CollectionCreationOptions
                 {
                     Name = studio,
