@@ -79,6 +79,7 @@ namespace PhoenixAdult.ScheduledTasks
                 }
             }
 
+
             progress?.Report(100);
         }
 
