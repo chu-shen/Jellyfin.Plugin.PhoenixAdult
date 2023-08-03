@@ -8,6 +8,7 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace PhoenixAdult.ScheduledTasks
 {
@@ -16,11 +17,13 @@ namespace PhoenixAdult.ScheduledTasks
         private readonly ILibraryManager libraryManager;
 
         private readonly ICollectionManager collectionManager;
+        private readonly ILogger<AddCollection> log;
 
-        public AddCollection(ILibraryManager libraryManager, ICollectionManager collectionManager)
+        public AddCollection(ILibraryManager libraryManager, ICollectionManager collectionManager, ILogger<AddCollection> log)
         {
             this.libraryManager = libraryManager;
             this.collectionManager = collectionManager;
+            this.log = log;
         }
 
         public string Key => Plugin.Instance.Name + "AddCollection";
@@ -48,10 +51,14 @@ namespace PhoenixAdult.ScheduledTasks
             {
                 progress?.Report((double)idx / studios.Count * 100);
 
-                var movies = items.Where(o => o.Studios.Contains(studio, StringComparer.OrdinalIgnoreCase));
+                log.LogInformation("Name before: {name}", studio);
+                var new_studio = studio.Replace("&nbsp;", string.Empty).Trim();
+                log.LogInformation("Name after: {name}", new_studio);
+
+                var movies = items.Where(o => o.Studios.Contains(new_studio, StringComparer.OrdinalIgnoreCase));
                 var option = new CollectionCreationOptions
                 {
-                    Name = studio.Replace("&nbsp;", string.Empty).Trim(),
+                    Name = new_studio,
 #if __EMBY__
                     ItemIdList = movies.Select(o => o.InternalId).ToArray(),
 #else
