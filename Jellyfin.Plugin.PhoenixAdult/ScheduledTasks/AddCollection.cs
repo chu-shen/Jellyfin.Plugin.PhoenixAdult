@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Collections;
@@ -9,7 +8,6 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace PhoenixAdult.ScheduledTasks
 {
@@ -18,13 +16,11 @@ namespace PhoenixAdult.ScheduledTasks
         private readonly ILibraryManager libraryManager;
 
         private readonly ICollectionManager collectionManager;
-        private readonly ILogger<AddCollection> log;
 
-        public AddCollection(ILibraryManager libraryManager, ICollectionManager collectionManager, ILogger<AddCollection> log)
+        public AddCollection(ILibraryManager libraryManager, ICollectionManager collectionManager)
         {
             this.libraryManager = libraryManager;
             this.collectionManager = collectionManager;
-            this.log = log;
         }
 
         public string Key => Plugin.Instance.Name + "AddCollection";
@@ -46,18 +42,14 @@ namespace PhoenixAdult.ScheduledTasks
 
             var items = this.libraryManager.GetItemList(new InternalItemsQuery()).Where(o => o.ProviderIds.ContainsKey(Plugin.Instance.Name));
 
-            var replacements = new Dictionary<string, string>
-                                {
-                                    { Regex.Escape("&nbsp;"), string.Empty }
-                                };
 
-            var studios = items.SelectMany(o => o.Studios.Select(studio => ReplaceStrings(studio, replacements))).Distinct().ToList();
+            var studios = items.SelectMany(o => o.Studios.Select(studio => studio.Replace("&nbsp;", string.Empty).Trim())).Distinct().ToList();
 
             foreach (var (idx, studio) in studios.WithIndex())
             {
                 progress?.Report((double)idx / studios.Count * 100);
 
-                var movies = items.Where(o => o.Studios.Any(studio => ReplaceStrings(studio, replacements).Equals(studio, StringComparison.OrdinalIgnoreCase)))
+                var movies = items.Where(o => o.Studios.Any(studio => studio.Replace("&nbsp;", string.Empty).Trim().Equals(studio, StringComparison.OrdinalIgnoreCase)))
                   .ToList();
                 var option = new CollectionCreationOptions
                 {
@@ -86,11 +78,7 @@ namespace PhoenixAdult.ScheduledTasks
                     return;
                 }
             }
-            string ReplaceStrings(string input, Dictionary<string, string> replacements)
-            {
-                var regex = new Regex(string.Join("|", replacements.Keys.Select(Regex.Escape)));
-                return regex.Replace(input, match => replacements[match.Value]);
-            }
+
 
             progress?.Report(100);
         }
