@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Collections;
@@ -45,20 +46,22 @@ namespace PhoenixAdult.ScheduledTasks
 
             var items = this.libraryManager.GetItemList(new InternalItemsQuery()).Where(o => o.ProviderIds.ContainsKey(Plugin.Instance.Name));
 
-            var studios = items.SelectMany(o => o.Studios).Distinct().ToList();
+            var replacements = new Dictionary<string, string>
+                                {
+                                    { Regex.Escape("&nbsp;"), string.Empty }
+                                };
+
+            var studios = items.SelectMany(o => o.Studios.Select(studio => ReplaceStrings(studio, replacements))).Distinct().ToList();
 
             foreach (var (idx, studio) in studios.WithIndex())
             {
                 progress?.Report((double)idx / studios.Count * 100);
 
-                log.LogInformation("Name before: {name}", studio);
-                var new_studio = studio.Replace("&nbsp;", string.Empty).Trim();
-                log.LogInformation("Name after: {name}", new_studio);
-
-                var movies = items.Where(o => o.Studios.Contains(new_studio, StringComparer.OrdinalIgnoreCase));
+                var movies = items.Where(o => o.Studios.Any(studio => ReplaceStrings(studio, replacements).Equals(studio, StringComparison.OrdinalIgnoreCase)))
+                  .ToList();
                 var option = new CollectionCreationOptions
                 {
-                    Name = new_studio,
+                    Name = studio,
 #if __EMBY__
                     ItemIdList = movies.Select(o => o.InternalId).ToArray(),
 #else
@@ -82,6 +85,11 @@ namespace PhoenixAdult.ScheduledTasks
                 {
                     return;
                 }
+            }
+            string ReplaceStrings(string input, Dictionary<string, string> replacements)
+            {
+                var regex = new Regex(string.Join("|", replacements.Keys.Select(Regex.Escape)));
+                return regex.Replace(input, match => replacements[match.Value]);
             }
 
             progress?.Report(100);
