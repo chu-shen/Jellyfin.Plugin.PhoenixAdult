@@ -192,7 +192,7 @@ namespace PhoenixAdult.Sites
             if (scoreNode != null)
             {
                 string score = scoreNode.InnerText;
-                if (score != "----")
+                if (score != string.Empty)
                 {
                     score = score.Replace("(", string.Empty).Replace(")", string.Empty).Trim();
                     result.Item.CommunityRating = float.Parse(score);
