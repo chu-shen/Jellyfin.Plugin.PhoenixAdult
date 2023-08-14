@@ -171,6 +171,34 @@ namespace PhoenixAdult.Sites
                 }
             }
 
+            var directorsNode = sceneData.SelectNodesSafe("//div[@id='video_director']//td[@class='text']//span[@class='director']//a");
+            foreach (var directorLink in directorsNode)
+            {
+                var directorName = directorLink.InnerText;
+
+                if (directorName != "----")
+                {
+                    var director = new PersonInfo
+                    {
+                        Name = directorName.Replace("&nbsp;", string.Empty).Trim(),
+                        Type = PersonType.Director,
+                    };
+
+                    result.People.Add(director);
+                }
+            }
+
+            var scoreNode = sceneData.SelectSingleNode("//div[@id='video_review']//td[@class='text']//span[@class='score']");
+            if (scoreNode != null)
+            {
+                string score = scoreNode.InnerText;
+                if (score != "----")
+                {
+                    score = score.Replace("(", string.Empty).Replace(")", string.Empty).Trim();
+                    result.Item.CommunityRating = float.Parse(score);
+                }
+            }
+
             return result;
         }
 
