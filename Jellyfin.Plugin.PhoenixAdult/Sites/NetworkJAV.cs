@@ -66,6 +66,7 @@ namespace PhoenixAdult.Sites
 
             var res = await provider.GetMetadata(info, cancellationToken).ConfigureAwait(false);
             result.Item = res.Item;
+            result.People = res.People;
 
             return result;
         }

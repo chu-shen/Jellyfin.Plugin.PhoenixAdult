@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - buildtest
     tags: ["v*"]
     paths:
       - Jellyfin.Plugin.PhoenixAdult/**
