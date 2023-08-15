@@ -119,6 +119,14 @@
                             <option value="PositionsLast">Positions Last</option>
                         </select>
                     </div>
+                    <div class="selectContainer">
+                        <label class="selectLabel" for="SearchLanguage">Search Language(Only Support JAVLibrary)</label>
+                        <select is="emby-select" id="SearchLanguage" name="SearchLanguage"
+                            class="emby-select-withcolor emby-select">
+                            <option value="Chinese">中文</option>
+                            <option value="English">English</option>
+                        </select>
+                    </div>
                     <button is="emby-button" type="submit" class="raised button-submit block emby-button">
                         <span>Save</span>
                     </button>
@@ -156,6 +164,7 @@
                     $('#DisableAutoIdentify').prop('checked', config.DisableAutoIdentify);
                     $('#PreferedActorNameSource').val(config.PreferedActorNameSource).change();
                     $('#JAVActorNamingStyle').val(config.JAVActorNamingStyle).change();
+                    $('#SearchLanguage').val(config.SearchLanguage).change();
                     $('#GenresSortingStyle').val(config.GenresSortingStyle).change();
                     Dashboard.hideLoadingMsg();
                 });
@@ -183,6 +192,7 @@
                     config.DisableAutoIdentify = $('#DisableAutoIdentify').prop('checked');
                     config.PreferedActorNameSource = $('#PreferedActorNameSource').val();
                     config.JAVActorNamingStyle = $('#JAVActorNamingStyle').val();
+                    config.SearchLanguage = $('#SearchLanguage').val();
                     config.GenresSortingStyle = $('#GenresSortingStyle').val();
                     ApiClient.updatePluginConfiguration(phoenixAdultConfig.pluginUniqueId, config).then(function (result) {
                         Dashboard.processPluginConfigurationUpdateResult(result);

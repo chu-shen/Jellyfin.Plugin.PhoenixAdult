@@ -48,7 +48,21 @@ namespace PhoenixAdult.Sites
                 {
                     foreach (var searchResult in searchResults)
                     {
-                        var sceneURL = new Uri(Helper.GetSearchBaseURL(siteNum) + $"/en/?v={searchResult.SelectSingleText(".//a/@id")}");
+                        var language = string.Empty;
+                        switch (Plugin.Instance.Configuration.SearchLanguage)
+                        {
+                            case SearchLanguage.Chinese:
+                                language = "cn";
+                                break;
+                            case SearchLanguage.English:
+                                language = "en";
+                                break;
+                            default:
+                                language = "en";
+                                break;
+                        }
+
+                        var sceneURL = new Uri(Helper.GetSearchBaseURL(siteNum) + $"/{language}" + $"/?v={searchResult.SelectSingleText(".//a/@id")}");
                         string curID = Helper.Encode(sceneURL.PathAndQuery),
                             sceneName = searchResult.SelectSingleText(".//div[@class='title']"),
                             scenePoster = $"{searchResult.SelectSingleText(".//img/@src").Replace("ps.", "pl.", StringComparison.OrdinalIgnoreCase)}",

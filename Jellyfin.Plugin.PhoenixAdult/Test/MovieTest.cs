@@ -28,5 +28,17 @@ namespace PhoenixAdult.Test
             Assert.AreEqual("REBDB-267", result.Item.OriginalTitle, "should return correct javID");
             Assert.AreEqual("鈴木心春", result.People[0].Name, "should return correct actor");
         }
+
+        [TestMethod]
+        public async Task SearchJAVLibrary()
+        {
+            this.plugin.Configuration.DefaultSiteName = "JAV";
+            var result = await this.provider.GetSearchResults(
+                new MovieInfo
+                {
+                    Name = "IPX-649-UC",
+                }, this.token);
+            Assert.IsNotNull(result, "movie should not be null");
+        }
     }
 }

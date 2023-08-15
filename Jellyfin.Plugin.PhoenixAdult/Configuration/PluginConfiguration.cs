@@ -21,6 +21,12 @@ namespace PhoenixAdult.Configuration
         NoChange = 1,
     }
 
+    public enum SearchLanguage
+    {
+        Chinese = 0,
+        English = 1,
+    }
+
     public class PluginConfiguration : BasePluginConfiguration
     {
         public PluginConfiguration()
@@ -58,6 +64,7 @@ namespace PhoenixAdult.Configuration
             this.JAVActorNamingStyle = JAVActorNamingStyle.WesternStyle;
             this.GenresSortingStyle = GenresSortingStyle.Alphabetical;
             this.PreferedActorNameSource = PreferedActorNameSource.LocalDatabase;
+            this.SearchLanguage = SearchLanguage.Chinese;
         }
 
         public string DatabaseHash { get; set; }
@@ -109,6 +116,8 @@ namespace PhoenixAdult.Configuration
         public GenresSortingStyle GenresSortingStyle { get; set; }
 
         public PreferedActorNameSource PreferedActorNameSource { get; set; }
+
+        public SearchLanguage SearchLanguage { get; set; }
 
 #if __EMBY__
 #else
