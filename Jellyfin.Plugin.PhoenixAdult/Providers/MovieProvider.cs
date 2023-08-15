@@ -151,8 +151,10 @@ namespace PhoenixAdult.Providers
                             Exception = e,
                         }, cancellationToken).ConfigureAwait(false);
                 }
-                // search with OriginalTitle 
-                if (!result.Any()){
+
+                // search with OriginalTitle
+                if (!result.Any() && searchInfo.OriginalTitle != null)
+                {
                     try
                     {
                         result = await provider.Search(site.siteNum, searchInfo.OriginalTitle, searchDateObj, cancellationToken).ConfigureAwait(false);
