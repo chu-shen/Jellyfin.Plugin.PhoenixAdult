@@ -151,6 +151,28 @@ namespace PhoenixAdult.Providers
                             Exception = e,
                         }, cancellationToken).ConfigureAwait(false);
                 }
+                // search with OriginalTitle 
+                if (!result.Any()){
+                    try
+                    {
+                        result = await provider.Search(site.siteNum, searchInfo.OriginalTitle, searchDateObj, cancellationToken).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error($"Search error: \"{e}\"");
+
+                        await Analytics.Send(
+                            new AnalyticsExeption
+                            {
+                                Request = searchInfo.Name,
+                                SiteNum = site.siteNum,
+                                SearchTitle = searchTitle,
+                                SearchDate = searchDateObj,
+                                ProviderName = provider.ToString(),
+                                Exception = e,
+                            }, cancellationToken).ConfigureAwait(false);
+                    }
+                }
 
                 if (result.Any())
                 {
