@@ -49,7 +49,7 @@ namespace PhoenixAdult.Sites
                 {
                     foreach (var searchResult in searchResults)
                     {
-                        var language = string.Empty;
+                        string language;
                         switch (Plugin.Instance.Configuration.SearchLanguage)
                         {
                             case SearchLanguage.Chinese:

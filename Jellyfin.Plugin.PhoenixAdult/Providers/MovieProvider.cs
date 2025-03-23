@@ -153,7 +153,7 @@ namespace PhoenixAdult.Providers
                 }
 
                 // search with OriginalTitle
-                if (!result.Any() && searchInfo.OriginalTitle != null)
+                if (result.Count == 0 && searchInfo.OriginalTitle != null)
                 {
                     try
                     {
@@ -176,7 +176,7 @@ namespace PhoenixAdult.Providers
                     }
                 }
 
-                if (result.Any())
+                if (result.Count != 0)
                 {
                     foreach (var scene in result)
                     {
