@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Jellyfin.Data.Enums;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Providers;
@@ -195,7 +196,7 @@ namespace PhoenixAdult.Sites
                     var director = new PersonInfo
                     {
                         Name = directorName.Replace("&nbsp;", string.Empty).Trim(),
-                        Type = PersonType.Director,
+                        Type = PersonKind.Director,
                     };
 
                     result.People.Add(director);
